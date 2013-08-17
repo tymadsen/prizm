@@ -1,0 +1,35 @@
+// UI
+elapsed time
+move count
+score
+level name
+pause
+locked meter?
+activation meter?
+
+
+// ux flow
+pick level
+board loads
+pieces drop in
+countdown / start button?
+player attempts a swap
+IF invalid swap, do nothing
+ELSE IF valid swap with non results, swap then return pieces to previous location
+ELSE IF valid and effective swap
+	swap pieces
+	calculate effects
+		special effects?
+		remove pieces
+		decrement lock / activation
+		perhaps fire a hit on all pieces affected? piece can determine what hit does?
+		hanging pieces drop down
+		refill board with new pieces
+		calculate score
+if game end conditions are met, end game and record moves, time, score
+
+
+// piece attributes
+className
+type (what they match up with (color in most cases))
+locked (can move)

@@ -1,0 +1,77 @@
+@board-bg-color: #222;
+
+body {
+	background: @board-bg-color;
+}
+
+.level {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.board {
+	position: absolute;
+	// background: black;
+}
+
+.generatePiece(@color) {
+	& > div {
+		background-color: @color;
+	}
+}
+
+.generateRingPiece(@color) {
+	& > div {
+		background-color: @color;
+		border: @board-bg-color solid 2px;
+		-webkit-box-shadow: 0 0 0 2px @color;
+		box-shadow: 0 0 0 2px @color;
+	}
+}
+
+.piece {
+	position: absolute;
+	height: 11.11%;
+	width: 11.11%;
+	-webkit-transition: -webkit-transform 200ms ease-out;
+	transition: transform 200ms ease-out;
+
+	& > div {
+		position: absolute;
+		left: 25%;
+		top: 25%;
+		width: 50%;
+		height: 50%;
+		border-radius: 50%;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+		box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+	}
+
+	&-color-white { .generatePiece(#FFF); }
+	&-color-rainbow { .generatePiece(#000); }
+	&-color-red { .generatePiece(#FF2E2B); }
+	&-color-orange { .generatePiece(#F89A2A); }
+	&-color-yellow { .generatePiece(#FFFD2C); }
+	&-color-green { .generatePiece(#2BFF64); }
+	&-color-blue { .generatePiece(#2EA8FF); }
+	&-color-violet { .generatePiece(#862BE8); }
+	&-color-magenta { .generatePiece(#E62BE8); }
+
+	&-player {
+		.generateRingPiece(white);
+	}
+
+	&:active {
+		-webkit-transform: scale(1.5);
+	}
+
+	&.static {
+		-webkit-transition: none;
+		transition: none;
+	}
+}
