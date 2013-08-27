@@ -32,6 +32,8 @@ define([
 				this.addPiece(piece);
 			}, this);
 
+			this.fillEmptySpaces();
+
 			this.pointerMoveHandler = _.bind(this.pointerMove, this);
 			this.pointerUpHandler = _.bind(this.pointerUp, this);
 		},
@@ -70,11 +72,35 @@ define([
 		},
 
 		clearDeleted: function() {
-			// TODO
+			this.model.eachSpace(function(piece, x, y) {
+				if (piece && piece.get('deleted')) {
+					this.model.pieces.remove(piece);
+					if (this.pieces[piece.cid]) {
+						this.pieces[piece.cid].remove();
+						delete this.pieces[piece.cid];
+					}
+				}
+			}, this);
+			this.model.invalidate();
 		},
 
 		settlePieces: function() {
-			// TODO
+			// TODO: fix
+			// this.model.eachSpace(function(piece, x, y) {
+			// 	if (!piece) {
+			// 		var falling = this.model.piecesAbove(x, y),
+			// 			curY = y;
+
+			// 		_.each(falling, function(piece) {
+			// 			piece.set('y', curY);
+			// 			curY--;
+
+			// 			if (this.pieces[piece.cid]) {
+			// 				this.pieces[piece.cid].render();
+			// 			}
+			// 		}, this);
+			// 	}
+			// }, this);
 		},
 
 		fillEmptySpaces: function() {
@@ -106,22 +132,70 @@ define([
 			return this;
 		},
 
-		swapPieces: function(p1Model, p2Model) {
-			if (!p1Model || !p2Model)
+		tryMovePiece: function(piece, x, y) {
+			var otherPiece = this.model.getPiece(x, y);
+
+			if (!piece || !otherPiece)
 				return false;
 
-			var p1View = this.pieces[p1Model.cid],
-				p2View = this.pieces[p2Model.cid];
+			var p1View = this.pieces[piece.cid],
+				p2View = this.pieces[otherPiece.cid];
 
-			if (p1View && p2View && this.model.swapPieces(p1Model, p2Model)) {
+			if (p1View && p2View && this.model.swapPieces(piece, otherPiece)) {
+
+				// if nothing happened, swap them back
+				if (!this.resolve(piece)) {
+					this.model.swapPieces(piece, otherPiece);
+					// TODO: show a switch and switch back animation
+				}
+
 				this.selectedPiece = null;
 				this.pointerUp();
 				p1View.render();
 				p2View.render();
+
+				this.render();
 				return true;
 			}
 
 			return false;
+		},
+
+		resolve: function(movedPiece) {
+			var rows,
+				ret = false;
+
+			this.model.eachSpace(function(rootPiece, x, y) {
+				if (!rootPiece)
+					return;
+
+				rows = [
+					[
+						rootPiece,
+						this.model.getPiece(x, y + 1),
+						this.model.getPiece(x, y + 2)
+					],[
+						rootPiece,
+						this.model.getPiece(x + 1, y),
+						this.model.getPiece(x + 2, y)
+					]
+				];
+
+				var matchedRow = _.find(rows, function(row) {
+					return _.every(row, function(piece) {
+						return piece && !piece.get('deleted') && piece.get('color') == rootPiece.get('color');
+					});
+				});
+
+				if (matchedRow) {
+					ret = true;
+					_.each(matchedRow, function(piece) {
+						piece.set('deleted', true);
+					});
+				}
+			}, this);
+
+			return ret;
 		},
 		
 		pointerDown: function(e, piece) {
@@ -134,7 +208,7 @@ define([
 			this.listenTo($(document), PointerEvent.UP, this.pointerUpHandler);
 
 			if (this.selectedPiece) {
-				if (!this.swapPieces(this.selectedPiece.model, piece.model)) {
+				if (!this.tryMovePiece(this.selectedPiece.model, piece.model.get('x'), piece.model.get('y'))) {
 					this.selectedPiece = piece;
 				}
 			}
@@ -154,24 +228,20 @@ define([
 			// horizontal
 			if (Math.abs(dx) > Math.abs(dy)) {
 				if (Math.abs(dx) > threshold) {
-					this.swapPieces(
+					this.tryMovePiece(
 						this.selectedPiece.model,
-						this.model.getPiece(
-							this.selectedPiece.model.get('x') + (dx > 0 ? 1 : -1),
-							this.selectedPiece.model.get('y')
-						)
+						this.selectedPiece.model.get('x') + (dx > 0 ? 1 : -1),
+						this.selectedPiece.model.get('y')
 					);
 				}
 			}
 			// vertical
 			else {
 				if (Math.abs(dy) > threshold) {
-					this.swapPieces(
+					this.tryMovePiece(
 						this.selectedPiece.model,
-						this.model.getPiece(
-							this.selectedPiece.model.get('x'),
-							this.selectedPiece.model.get('y') + (dy > 0 ? 1 : -1)
-						)
+						this.selectedPiece.model.get('x'),
+						this.selectedPiece.model.get('y') + (dy > 0 ? 1 : -1)
 					);
 				}
 			}

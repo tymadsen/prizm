@@ -46,6 +46,16 @@ require([
 				color: 0,
 				x: 4,
 				y: 3
+			},{
+				type: 1,
+				color: 0,
+				x: 2,
+				y: 8
+			},{
+				type: 1,
+				color: 0,
+				x: 6,
+				y: 6
 			}
 		],
 		tiles: [],

@@ -53,6 +53,19 @@ define([
 			}
 		},
 
+		piecesAbove: function(x, y) {
+			this._calculatePiecesAr();
+
+			var ret = [];
+
+			while(y >= 0) {
+				y--;
+				ret.push(this.getPiece(x, y));
+			}
+
+			return _.compact(ret);
+		},
+
 		swapPieces: function(p1, p2) {
 			if (!p1 || !p2)
 				return false;

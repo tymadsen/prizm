@@ -59,6 +59,10 @@ define([
 				}
 			}
 
+			if (this.model.get('deleted')) {
+				this.remove();
+			}
+
 			return this;
 		},
 
