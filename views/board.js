@@ -38,6 +38,17 @@ define([
 			this.pointerUpHandler = _.bind(this.pointerUp, this);
 		},
 
+		cleanupboard: function() {
+			var change = false;
+			var me = this;
+			_.each(this.pieces, function(piece){
+				if(me.resolve(piece))
+					change = true;
+			});
+			if(change)
+				this.render();
+		},
+
 		calculatePieceSize: function() {
 			this.pieceSize = Math.floor(Math.min(
 				(this.container.width() - 2*this.margin)/this.model.width,
@@ -128,6 +139,7 @@ define([
 			this.clearDeleted();
 			this.settlePieces();
 			this.fillEmptySpaces();
+			this.cleanupboard();
 
 			return this;
 		},

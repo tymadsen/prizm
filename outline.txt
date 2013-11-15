@@ -1,0 +1,102 @@
+// UI
+elapsed time
+move count
+score
+level name
+pause
+rotate controls
+locked meter?
+activation meter?
+
+
+// ux flow
+pick level
+board loads
+pieces drop in
+countdown / start button?
+player attempts a swap
+IF invalid swap, do nothing
+ELSE IF valid swap with non results, swap then return pieces to previous location
+ELSE IF valid and effective swap
+	swap pieces
+	calculate effects
+		special effects?
+		remove pieces
+		decrement lock / activation
+		perhaps fire a hit on all pieces affected? piece can determine what hit does?
+		hanging pieces drop down
+		refill board with new pieces
+		calculate score
+if game end conditions are met, end game and record moves, time, score
+
+
+// piece attributes
+className
+type
+	portal
+	generic
+	wall/obstacle
+	lock
+	activator
+	switch
+color
+	A,B,C,D,E,F (could be mapped to different color themes)
+	NONE - never reacts (like white piece)
+	ALL - acts as any color (will react whenever possible)
+locked (can move)
+
+
+// piece model
+board: BoardModel
+className: String
+type: Enum
+color: Enum
+x: Int
+y: Int
+lockCount: Int
+activationCount: Int
+locked: Enum[function():boolean]
+hit: function():boolean // return true if the piece should be removed
+
+// piece view
+model: PieceModel
+position: {x:Int, y:Int}
+updatePosition: function(x, y)
+render: function(noAnimation:Boolean):this
+destroy: function()
+
+// board model
+level: LevelModel
+size: {w:Int, h:Int}
+pieces: Array[Array[PieceModel]]
+setPiece: function(x:Int, y:Int, piece:PieceModel)
+getPiece: function(x:Int, y:Int):PieceModel
+swapPieces: function(p1: PieceModel, p2: PieceModel):Boolean
+resolveSwap: function() // mark pieces as deleted, decrement counters, check for game over, increment score, increment move counter, etc.
+rotate: function(clockwise:Boolean)
+
+// board view
+container: Element
+margin: Int
+pieceSize: Int
+pieces: Object[id,PieceView]
+calculatePieceSize: function():Int
+autoPosition: function()
+addPiece: function(PieceView)
+settlePieces: function() // have pieces drop down after a swap resolve
+fillEmptySpaces: function()
+render: function() // should take care of removing deleted pieces, settling, and filling
+rotate: function(clockwise:Boolean)
+pointerDown: function(e:Event, piece:PieceView)
+pointerMove: function(e:Event)
+pointerUp: function(e:Event)
+
+// level model
+time: Int = 0 // seconds
+score: Int = 0
+moves: Int = 0
+board: BoardModel
+
+// level view
+board: BoardView
+render: function() // should update views for timer, score, and move count
