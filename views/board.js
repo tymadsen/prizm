@@ -139,7 +139,9 @@ define([
 			this.clearDeleted();
 			this.settlePieces();
 			this.fillEmptySpaces();
-			this.cleanupboard();
+			setTimeout(_.bind(function() {
+				this.cleanupboard();	
+			}, this), 300);
 
 			return this;
 		},
