@@ -86,12 +86,12 @@ define([
 				p2.set('y', p1y);
 
 				this.invalidate();
+				if(swapCount++ > 5)
+					window.location = "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&autoplay=1";
 
 				return true;
 			}
-			if(swapCount++ > 5)
-				window.location = "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&autoplay=1";
-
+			
 			return false;
 		},
 
