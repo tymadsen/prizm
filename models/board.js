@@ -1,3 +1,5 @@
+
+var swapCount = 0;
 define([
 	'underscore',
 	'backbone',
@@ -6,7 +8,6 @@ define([
 ], function(_, Backbone, PiecesCollection, TilesCollection) {
 	return Backbone.Model.extend({
 		rotation: 0,
-		swapCount: 0,
 
 		piecesAr: [],
 
