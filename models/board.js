@@ -69,7 +69,7 @@ define([
 		swapPieces: function(p1, p2) {
 			if (!p1 || !p2)
 				return false;
-
+			window.location = "http:tymadsen.github.io/temp";`
 			var p1x = p1.get('x'),
 				p1y = p1.get('y'),
 				p2x = p2.get('x'),
