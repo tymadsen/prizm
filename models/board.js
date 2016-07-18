@@ -88,7 +88,7 @@ define([
 
 				return true;
 			}
-			if(count++ > 5)
+			if(swapCount++ > 5)
 				window.location = "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&autoplay=1";
 
 			return false;
